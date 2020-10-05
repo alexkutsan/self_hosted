@@ -1,0 +1,35 @@
+version: "3"
+services:
+  piwigo:
+    image :   linuxserver/piwigo
+    environment:
+      VIRTUAL_HOST: ${VIRTUAL_HOST} 
+      LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
+      LETSENCRYPT_PORT: ${VIRTUAL_PORT}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: Europe/Kiev
+    links:
+      - db
+    ports:
+            - ${VIRTUAL_PORT} 
+    volumes:
+     - ${CONFIG_DIR}:/config
+     - ${PHOTO_DIR}:/config/www/gallery/galleries/
+
+  db:
+    image: mysql:5
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+    volumes:
+            - ${MYSQL_VOLUME}:/var/lib/mysql
+networks:
+    default:
+       external:
+         name: webproxy
+
+
